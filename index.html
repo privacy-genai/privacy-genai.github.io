@@ -1,465 +1,641 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tracking on AI Chatbots — Privacy Measurement Study</title>
-  <meta name="description" content="First systematic measurement of web tracking on 20 popular AI chatbots. 17 of 20 share data with third parties; 3 expose plaintext prompts via session replay." />
-  <meta property="og:title" content="Tracking on AI Chatbots: Measuring Content and Identity Exposure" />
-  <meta property="og:description" content="17 of 20 chatbots share conversation data with at least one third party. 3 expose plaintext prompts via session replay." />
-  <meta property="og:type" content="website" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracking on AI Chatbots - Privacy Measurement Study</title>
+    <meta
+      name="description"
+      content="First systematic measurement of web tracking on 20 popular AI chatbots. 17 of 20 share data with third parties; 3 expose plaintext prompts via session replay."
+    />
+    <meta
+      property="og:title"
+      content="Tracking on AI Chatbots: Measuring Content and Identity Exposure"
+    />
+    <meta
+      property="og:description"
+      content="17 of 20 chatbots share conversation data with at least one third party. 3 expose plaintext prompts via session replay."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<a href="#main-content" class="skip-link">Skip to main content</a>
-
-<!-- ── Navigation ─────────────────────────────────────────── -->
-<header id="site-nav">
-  <div class="container">
-    <span class="nav-brand">Tracking on AI Chatbots</span>
-    <nav aria-label="Site navigation">
-      <a href="#abstract">Abstract</a>
-      <a href="#matrix">Matrix</a>
-      <a href="#sankey">Data Flows</a>
-      <a href="#case-studies">Case Studies</a>
-      <a href="#private-mode">Private Mode</a>
-      <a href="#privacy-policy">Policy Gaps</a>
-      <a href="#methodology">Methods</a>
-      <a href="#citation">Cite</a>
-      <a href="#authors">Authors</a>
-    </nav>
-  </div>
-</header>
-
-<main id="main-content">
-
-<!-- ── Hero ───────────────────────────────────────────────── -->
-<div id="hero">
-  <div class="hero-inner">
-    <div class="container">
-
-      <h1>
-        Tracking <span class="title-highlight">Conversations:</span><br>
-        Measuring Content and Identity<br>Exposure on AI Chatbots
-      </h1>
-
-      <div class="hero-meta">
-        <p class="hero-authors">
-          Muhammad Jazlan &nbsp;·&nbsp; Ethan Wang &nbsp;·&nbsp; Yash Vekaria &nbsp;·&nbsp; Zubair Shafiq
-        </p>
-        <p class="hero-affiliation">University of California, Davis</p>
+    <!-- ── Navigation ─────────────────────────────────────────── -->
+    <header id="site-nav">
+      <div class="container">
+        <span class="nav-brand">Tracking on AI Chatbots</span>
+        <nav aria-label="Site navigation">
+          <a href="#abstract">Abstract</a>
+          <a href="#matrix">Matrix</a>
+          <a href="#sankey">Data Flows</a>
+          <a href="#case-studies">Case Studies</a>
+          <a href="#private-mode">Private Mode</a>
+          <a href="#privacy-policy">Policy Gaps</a>
+          <a href="#methodology">Methods</a>
+          <a href="#citation">Cite</a>
+          <a href="#authors">Authors</a>
+        </nav>
       </div>
+    </header>
 
-      <div class="hero-links">
-        <a href="https://arxiv.org/abs/2604.27438" class="btn btn-primary" target="_blank" rel="noopener">
-          ↗&nbsp; Read the Paper
-        </a>
-        <a href="#matrix" class="btn btn-ghost">Tracking Matrix</a>
-        <a href="#sankey" class="btn btn-ghost">Data Flows</a>
-        <a href="#citation" class="btn btn-ghost">BibTeX</a>
-      </div>
+    <main id="main-content">
+      <!-- ── Hero ───────────────────────────────────────────────── -->
+      <div id="hero">
+        <div class="hero-inner">
+          <div class="container">
+            <h1>
+              Tracking <span class="title-highlight">Conversations:</span><br />
+              Measuring Content and Identity<br />Exposure on AI Chatbots
+            </h1>
 
-      <div class="stats-grid">
-        <div class="stat-cell">
-          <div class="stat-num">17<sup>/20</sup></div>
-          <div class="stat-desc">chatbots share data with ≥1 third party</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num">47</div>
-          <div class="stat-desc">unique third-party owners identified</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num">3</div>
-          <div class="stat-desc">chatbots expose plaintext prompts via session replay</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num">178</div>
-          <div class="stat-desc">(chatbot, third-party) pairs in normal sessions</div>
-        </div>
-        <div class="stat-cell">
-          <div class="stat-num">0</div>
-          <div class="stat-desc">content or identity leaks observed in private mode</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="hero-meta">
+              <p class="hero-authors">
+                Muhammad Jazlan &nbsp;·&nbsp; Ethan Wang &nbsp;·&nbsp; Yash
+                Vekaria &nbsp;·&nbsp; Zubair Shafiq
+              </p>
+              <p class="hero-affiliation">University of California, Davis</p>
+            </div>
 
-<!-- ── Abstract ───────────────────────────────────────────── -->
-<section id="abstract">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Abstract</div>
-      <h2 class="section-title">What We Studied &amp; What We Found</h2>
-    </div>
+            <div class="hero-links">
+              <a
+                href="https://arxiv.org/abs/2604.27438"
+                class="btn btn-primary"
+                target="_blank"
+                rel="noopener"
+              >
+                ↗&nbsp; Read the Paper
+              </a>
+              <a href="#matrix" class="btn btn-ghost">Tracking Matrix</a>
+              <a href="#sankey" class="btn btn-ghost">Data Flows</a>
+              <a href="#citation" class="btn btn-ghost">BibTeX</a>
+            </div>
 
-    <div class="abstract-body">
-      <div class="abstract-text">
-        <p>
-          AI chatbots have become a primary interface for seeking information online. As their popularity
-          grows, providers increasingly deploy advertising and analytics infrastructure — raising
-          questions about what happens to the sensitive conversations users type into these interfaces.
-        </p>
-        <p>
-          We present the <strong>first systematic measurement study of web tracking on 20 popular AI
-          chatbots</strong>. Using controlled test accounts and a deliberately sensitive prompt
-          (<em>"pregnancy test near me"</em>), we captured and analyzed HTTP network traffic to measure
-          two categories of exposure: <strong>content</strong> (user prompts, prompt-derived titles,
-          chat URLs, chat identifiers) and <strong>identity</strong> (names, email addresses, account
-          identifiers, first-party cookies, IP addresses, User-Agent strings).
-        </p>
-        <p>
-          We find that <strong>17 of 20 chatbots</strong> share information with at least one third
-          party. Three services — Genspark, SeaArt, and ChatOn — transmit the <strong>full plaintext
-          conversation text to Microsoft Clarity</strong>, a session replay service, during normal
-          authenticated sessions. Fifteen chatbots expose conversation URLs or identifiers to
-          third-party advertising and analytics endpoints. Several expose user identity through support
-          widgets, analytics tags, and error monitoring — including hashed email addresses used for
-          cross-site re-identification.
-        </p>
-        <p>
-          We also evaluate <strong>private and temporary chat modes</strong>, finding they dramatically
-          reduce tracking: from 178 observed (chatbot, third-party) pairs in normal sessions to just 13
-          in private mode, with <strong>zero content or identity exposure</strong> detected across all
-          10 services tested. Finally, we analyze privacy policy disclosures and find notable gaps
-          between what services actually send and what they disclose.
-        </p>
-      </div>
-
-      <aside class="abstract-sidebar">
-        <div class="finding-card">
-          <div class="fc-label">Key Finding 1</div>
-          <div class="fc-text">85% of chatbots embed third-party trackers — spanning advertising, analytics, social media, and error monitoring.</div>
-        </div>
-        <div class="finding-card">
-          <div class="fc-label">Key Finding 2</div>
-          <div class="fc-text">3 services stream your conversation text to Microsoft Clarity in real time via session replay.</div>
-        </div>
-        <div class="finding-card">
-          <div class="fc-label">Key Finding 3</div>
-          <div class="fc-text">Claude and Mistral's support widget fires on page load, sending your email and name to Intercom without interaction.</div>
-        </div>
-        <div class="finding-card">
-          <div class="fc-label">Key Finding 4</div>
-          <div class="fc-text">Private/temporary modes work — but only 10 of 20 chatbots offer them.</div>
-        </div>
-      </aside>
-    </div>
-  </div>
-</section>
-
-<!-- ── Tracking Matrix ─────────────────────────────────────── -->
-<section id="matrix">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Findings</div>
-      <h2 class="section-title">Exposure Tracking Matrix</h2>
-      <p class="section-desc">
-        Which chatbots expose which types of information, and to whom. Click any row label
-        to expand notes. Hover cells for per-service detail.
-      </p>
-    </div>
-
-    <div class="matrix-legend">
-      <span><span class="legend-swatch swatch-third"></span>Third-party exposure</span>
-      <span><span class="legend-swatch swatch-first"></span>First-party only</span>
-      <span><span class="legend-swatch swatch-both"></span>Both first &amp; third party</span>
-      <span><span class="legend-swatch swatch-none"></span>Not observed <span style="color:var(--slate-400);font-size:0.9em;">(✗)</span></span>
-      <span style="margin-left:8px;">
-        Channels: <code class="ch-U">U</code> URL &nbsp; <code class="ch-B">B</code> Body &nbsp; <code class="ch-H">H</code> Header &nbsp; <code class="ch-C">C</code> Cookie
-      </span>
-      <span style="color:var(--accent);">★ supports private mode</span>
-    </div>
-
-    <div class="matrix-scroll" role="region" aria-label="Exposure tracking matrix — scroll horizontally to see all chatbots">
-      <table id="matrix-table" aria-label="Chatbot exposure tracking matrix"></table>
-    </div>
-  </div>
-</section>
-
-<!-- ── Sankey ──────────────────────────────────────────────── -->
-<section id="sankey">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Data Flows</div>
-      <h2 class="section-title">Third-Party Data Flow Visualization</h2>
-      <p class="section-desc">
-        Flow diagram mapping which chatbots send data to which third-party services. Toggle between
-        normal and private sessions to see the stark difference.
-      </p>
-    </div>
-
-    <div class="sankey-controls" role="tablist" aria-label="Chat session type">
-      <button class="tab-btn active" data-mode="normal" role="tab" aria-selected="true">Normal Chats</button>
-      <button class="tab-btn" data-mode="private" role="tab" aria-selected="false">Private / Temporary Chats</button>
-    </div>
-
-    <div class="sankey-legend">
-      <div class="legend-item"><span class="legend-dot bot"></span>AI Chatbot</div>
-      <div class="legend-item"><span class="legend-dot adv"></span>Advertising</div>
-      <div class="legend-item"><span class="legend-dot ana"></span>Analytics / Session Replay</div>
-      <div class="legend-item"><span class="legend-dot oth"></span>Other (Error Monitoring, etc.)</div>
-    </div>
-
-    <div id="sankey-container"></div>
-    <p class="sankey-note">Hover over flows and nodes for details.</p>
-  </div>
-</section>
-
-<!-- ── Case Studies ────────────────────────────────────────── -->
-<section id="case-studies">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Notable Exposures</div>
-      <h2 class="section-title">Case Studies</h2>
-      <p class="section-desc">
-        Three categories of serious data exposure discovered during the study. Expand each to read
-        the full technical detail and view captured network payloads.
-      </p>
-    </div>
-
-    <div id="case-studies-list"></div>
-  </div>
-</section>
-
-<!-- ── Private Mode ────────────────────────────────────────── -->
-<section id="private-mode">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Mitigation</div>
-      <h2 class="section-title">Private Mode Effectiveness</h2>
-      <p class="section-desc">
-        For the 10 services offering a private or temporary chat mode, tracking collapses almost entirely.
-        No content or identity exposure was detected in any private session.
-      </p>
-    </div>
-
-    <div class="before-after">
-      <div class="before-col">
-        <div class="ba-label">Normal Chats</div>
-        <div class="ba-number">178</div>
-        <div class="ba-sub">(chatbot, third-party) pairs observed</div>
-        <div class="ba-detail">
-          17 of 20 chatbots share data. 47 unique third-party owners.
-          Content and identity exposure detected across multiple services.
-          Advertising, analytics, error monitoring, session replay all fire.
+            <div class="stats-grid">
+              <div class="stat-cell">
+                <div class="stat-num">17<sup>/20</sup></div>
+                <div class="stat-desc">
+                  chatbots share data with ≥1 third party
+                </div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-num">47</div>
+                <div class="stat-desc">
+                  unique third-party owners identified
+                </div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-num">3</div>
+                <div class="stat-desc">
+                  chatbots expose plaintext prompts via session replay
+                </div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-num">178</div>
+                <div class="stat-desc">
+                  (chatbot, third-party) pairs in normal sessions
+                </div>
+              </div>
+              <div class="stat-cell">
+                <div class="stat-num">0</div>
+                <div class="stat-desc">
+                  content or identity leaks observed in private mode
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="after-col">
-        <div class="ba-label">Private / Temporary Chats</div>
-        <div class="ba-number">13</div>
-        <div class="ba-sub">(chatbot, third-party) pairs observed</div>
-        <div class="ba-detail">
-          Only 3 unique third-party owners remain (Datadog, Mapbox, Google).
-          <strong>Zero identity or content exposure detected</strong> in any
-          private session — across all 10 services that support this mode.
+
+      <!-- ── Abstract ───────────────────────────────────────────── -->
+      <section id="abstract">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Abstract</div>
+            <h2 class="section-title">What We Studied &amp; What We Found</h2>
+          </div>
+
+          <div class="abstract-body">
+            <div class="abstract-text">
+              <p>
+                AI chatbots have become a primary interface for seeking
+                information online. As their popularity grows, providers
+                increasingly deploy advertising and analytics infrastructure -
+                raising questions about what happens to the sensitive
+                conversations users type into these interfaces.
+              </p>
+              <p>
+                We present the
+                <strong
+                  >first systematic measurement study of web tracking on 20
+                  popular AI chatbots</strong
+                >. Using controlled test accounts and a deliberately sensitive
+                prompt (<em>"pregnancy test near me"</em>), we captured and
+                analyzed HTTP network traffic to measure two categories of
+                exposure: <strong>content</strong> (user prompts, prompt-derived
+                titles, chat URLs, chat identifiers) and
+                <strong>identity</strong> (names, email addresses, account
+                identifiers, first-party cookies, IP addresses, User-Agent
+                strings).
+              </p>
+              <p>
+                We find that <strong>17 of 20 chatbots</strong> share
+                information with at least one third party. Three services -
+                Genspark, SeaArt, and ChatOn - transmit the
+                <strong
+                  >full plaintext conversation text to Microsoft Clarity</strong
+                >, a session replay service, during normal authenticated
+                sessions. Microsoft's Copilot also embeds Clarity. While the
+                conversation is tracked, it is not recorded in plaintext.
+                Fifteen chatbots expose conversation URLs or identifiers to
+                third-party advertising and analytics endpoints. Several expose
+                user identity through support widgets, analytics tags, and error
+                monitoring - including hashed email addresses typically used for
+                cross-site tracking and targeted advertising.
+              </p>
+              <p>
+                We also evaluate
+                <strong>private and temporary chat modes</strong>, finding they
+                dramatically reduce tracking: from 178 observed (chatbot,
+                third-party) pairs in normal sessions to just 13 in private
+                mode, with
+                <strong>zero content or identity exposure</strong> detected
+                across all 10 services tested. Finally, we analyze privacy
+                policy disclosures and find notable gaps between what services
+                actually send and what they disclose.
+              </p>
+            </div>
+
+            <aside class="abstract-sidebar">
+              <div class="finding-card">
+                <div class="fc-label">Key Finding 1</div>
+                <div class="fc-text">
+                  85% of chatbots embed third-party trackers - spanning
+                  advertising, analytics, social media, and error monitoring.
+                </div>
+              </div>
+              <div class="finding-card">
+                <div class="fc-label">Key Finding 2</div>
+                <div class="fc-text">
+                  3 services stream your conversation text to Microsoft Clarity
+                  in real time via session replay.
+                </div>
+              </div>
+              <div class="finding-card">
+                <div class="fc-label">Key Finding 3</div>
+                <div class="fc-text">
+                  Claude and Mistral's support widget fires on page load,
+                  sending your email and name to Intercom without interaction.
+                </div>
+              </div>
+              <div class="finding-card">
+                <div class="fc-label">Key Finding 4</div>
+                <div class="fc-text">
+                  Private/temporary modes work - but only 7 of 20 chatbots we study
+                  offer them.
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <div class="private-support-section">
-      <h3>Private / Temporary Chat Support</h3>
-      <div class="chatbot-grid" id="chatbot-pill-grid"></div>
-      <p class="private-mode-note">
-        Starred services were evaluated in both normal and private modes.
-      </p>
-    </div>
-  </div>
-</section>
+      <!-- ── Tracking Matrix ─────────────────────────────────────── -->
+      <section id="matrix">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Findings</div>
+            <h2 class="section-title">Exposure Tracking Matrix</h2>
+            <p class="section-desc">
+              Which chatbots expose which types of information, and to whom.
+              Click any row label to expand notes. Hover cells for per-service
+              detail.
+            </p>
+          </div>
 
-<!-- ── Privacy Policy ──────────────────────────────────────── -->
-<section id="privacy-policy">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Transparency</div>
-      <h2 class="section-title">Privacy Policy Analysis</h2>
-      <p class="section-desc">
-        All 20 privacy policies acknowledge general data practices, but most stop there.
-        Only 8 name specific third-party recipients — and three services have a critical gap.
-      </p>
-    </div>
+          <div class="matrix-legend">
+            <span
+              ><span class="legend-swatch swatch-third"></span>Third-party
+              exposure</span
+            >
+            <span
+              ><span class="legend-swatch swatch-first"></span>First-party
+              only</span
+            >
+            <span
+              ><span class="legend-swatch swatch-both"></span>Both first &amp;
+              third party</span
+            >
+            <span
+              ><span class="legend-swatch swatch-none"></span>Not observed
+              <span style="color: var(--slate-400); font-size: 0.9em"
+                >(✗)</span
+              ></span
+            >
+            <span style="margin-left: 8px">
+              Channels: <code class="ch-U">U</code> URL &nbsp;
+              <code class="ch-B">B</code> Body &nbsp;
+              <code class="ch-H">H</code> Header &nbsp;
+              <code class="ch-C">C</code> Cookie
+            </span>
+            <span style="color: var(--accent)">★ supports private mode</span>
+          </div>
 
-    <div class="callout good">
-      <span class="callout-icon">✓</span>
-      <div>
-        <strong>Duck.ai stands out:</strong> the only service studied with zero third-party data sharing.
-        It actively strips user IP addresses from requests. OpenRouter and Claude provide the most
-        comprehensive third-party disclosure among the services examined.
-      </div>
-    </div>
+          <div
+            class="matrix-scroll"
+            role="region"
+            aria-label="Exposure tracking matrix - scroll horizontally to see all chatbots"
+          >
+            <table
+              id="matrix-table"
+              aria-label="Chatbot exposure tracking matrix"
+            ></table>
+          </div>
+        </div>
+      </section>
 
-    <div class="callout bad">
-      <span class="callout-icon">!</span>
-      <div>
-        <strong>Critical policy gap — Genspark, SeaArt, ChatOn:</strong> these three services
-        transmit plaintext conversation text to Microsoft Clarity (session replay), yet none of
-        their privacy policies disclose Microsoft or Clarity as a data recipient.
-      </div>
-    </div>
+      <!-- ── Sankey ──────────────────────────────────────────────── -->
+      <section id="sankey">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Data Flows</div>
+            <h2 class="section-title">Third-Party Data Flow Visualization</h2>
+            <p class="section-desc">
+              Flow diagram mapping which chatbots send data to which third-party
+              services. Toggle between normal and private sessions to see the
+              stark difference.
+            </p>
+          </div>
 
-    <div class="policy-table-wrap">
-      <table id="policy-table" aria-label="Privacy policy analysis by chatbot">
-        <thead>
-          <tr>
-            <th scope="col">Chatbot</th>
-            <th scope="col">Names Specific Recipients</th>
-            <th scope="col">Notable Gap</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-</section>
+          <div
+            class="sankey-controls"
+            role="tablist"
+            aria-label="Chat session type"
+          >
+            <button
+              class="tab-btn active"
+              data-mode="normal"
+              role="tab"
+              aria-selected="true"
+            >
+              Normal Chats
+            </button>
+            <button
+              class="tab-btn"
+              data-mode="private"
+              role="tab"
+              aria-selected="false"
+            >
+              Private / Temporary Chats
+            </button>
+          </div>
 
-<!-- ── Methodology ─────────────────────────────────────────── -->
-<section id="methodology">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Methods</div>
-      <h2 class="section-title">Study Methodology</h2>
-      <p class="section-desc">
-        A controlled measurement study using fresh test accounts, a single sensitive prompt, and
-        comprehensive traffic analysis with 12+ encoding variants to catch hashed identifiers.
-      </p>
-    </div>
+          <div class="sankey-legend">
+            <div class="legend-item">
+              <span class="legend-dot bot"></span>AI Chatbot
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot adv"></span>Advertising
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot ana"></span>Analytics / Session Replay
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot oth"></span>Other (Error Monitoring, etc.)
+            </div>
+          </div>
 
-    <div class="pipeline">
-      <div class="pipeline-step">
-        <div class="pipeline-num">01</div>
-        <div class="pipeline-title">Fresh Accounts</div>
-        <div class="pipeline-desc">New account per service, controlled test identity — known email, name, credentials</div>
-      </div>
-      <div class="pipeline-step">
-        <div class="pipeline-num">02</div>
-        <div class="pipeline-title">Sensitive Prompt</div>
-        <div class="pipeline-desc">"pregnancy test near me" — health topic with implicit location, high privacy stakes</div>
-      </div>
-      <div class="pipeline-step">
-        <div class="pipeline-num">03</div>
-        <div class="pipeline-title">Traffic Capture</div>
-        <div class="pipeline-desc">Full HTTP metadata, URLs, headers, request bodies, cookies via Chrome (no protection)</div>
-      </div>
-      <div class="pipeline-step">
-        <div class="pipeline-num">04</div>
-        <div class="pipeline-title">Analysis Pipeline</div>
-        <div class="pipeline-desc">Preprocess → search target definition → matching → party attribution</div>
-      </div>
-    </div>
+          <div id="sankey-container"></div>
+          <p class="sankey-note">Hover over flows and nodes for details.</p>
+        </div>
+      </section>
 
-    <div class="method-grid">
-      <div class="method-card">
-        <h4>Chatbot Selection</h4>
-        <p>20 popular AI chatbots spanning major US and international providers — closed-weight (ChatGPT, Claude, Gemini) and open-weight deployments (DeepSeek, Qwen), consumer and developer-oriented.</p>
-      </div>
-      <div class="method-card">
-        <h4>Prompt Design</h4>
-        <p>"pregnancy test near me" was chosen for combining a sensitive health topic with an implicit location — a high-stakes query category where privacy exposure carries real-world consequences.</p>
-      </div>
-      <div class="method-card">
-        <h4>Encoding &amp; Hash Coverage</h4>
-        <p>Identity strings searched across 12+ encoding and hash variants: base64, URL-encoding, hex, MD5, SHA-1/256/512, SHA3, RIPEMD-160, CRC-32, Adler-32 — to catch hashed email identifiers.</p>
-      </div>
-      <div class="method-card">
-        <h4>Party Attribution</h4>
-        <p>eTLD+1 matching classifies domains. Platform parties (e.g. Google for Gemini) are distinguished from independent third parties. Categories: Advertising, Analytics, Other.</p>
-      </div>
-      <div class="method-card">
-        <h4>Private Mode Evaluation</h4>
-        <p>10 services support private or temporary chat. Each was evaluated identically to normal sessions and results compared to measure tracking reduction effectiveness.</p>
-      </div>
-      <div class="method-card">
-        <h4>Scope &amp; Limitations</h4>
-        <p>Web interfaces only — excludes mobile apps, extensions, and embedded chatbot deployments. Single controlled prompt. Chrome baseline without tracking protection. Measurement-only; does not evaluate user consent flows.</p>
-      </div>
-    </div>
-  </div>
-</section>
+      <!-- ── Case Studies ────────────────────────────────────────── -->
+      <section id="case-studies">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Notable Exposures</div>
+            <h2 class="section-title">Case Studies</h2>
+            <p class="section-desc">
+              Three categories of serious data exposure discovered during the
+              study. Expand each to read the full technical detail and view
+              captured network payloads.
+            </p>
+          </div>
 
-<!-- ── Citation ────────────────────────────────────────────── -->
-<section id="citation">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow">Citation</div>
-      <h2 class="section-title">Cite This Work</h2>
-    </div>
+          <div id="case-studies-list"></div>
+        </div>
+      </section>
 
-    <button class="bibtex-toggle" id="bibtex-toggle" aria-expanded="false" aria-controls="bibtex-block">
-      { } &nbsp; Show BibTeX
-    </button>
+      <!-- ── Private Mode ────────────────────────────────────────── -->
+      <section id="private-mode">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Mitigation</div>
+            <h2 class="section-title">Private Mode Effectiveness</h2>
+            <p class="section-desc">
+              For the 10 services offering a private or temporary chat mode,
+              tracking collapses almost entirely. No content or identity
+              exposure was detected in any private session.
+            </p>
+          </div>
 
-    <div class="bibtex-block" id="bibtex-block" style="display:none;">
-      <pre class="bibtex-code">@article{jazlan2026tracking,
+          <div class="before-after">
+            <div class="before-col">
+              <div class="ba-label">Normal Chats</div>
+              <div class="ba-number">178</div>
+              <div class="ba-sub">(chatbot, third-party) pairs observed</div>
+              <div class="ba-detail">
+                17 of 20 chatbots share data. 47 unique third-party owners.
+                Content and identity exposure detected across multiple services.
+                Advertising, analytics, error monitoring, session replay all
+                fire.
+              </div>
+            </div>
+            <div class="after-col">
+              <div class="ba-label">Private / Temporary Chats</div>
+              <div class="ba-number">13</div>
+              <div class="ba-sub">(chatbot, third-party) pairs observed</div>
+              <div class="ba-detail">
+                Only 3 unique third-party owners remain (Datadog, Mapbox,
+                Google).
+                <strong>Zero identity or content exposure detected</strong> in
+                any private session - across all 10 services that support this
+                mode.
+              </div>
+            </div>
+          </div>
+
+          <div class="private-support-section">
+            <h3>Private / Temporary Chat Support</h3>
+            <div class="chatbot-grid" id="chatbot-pill-grid"></div>
+            <p class="private-mode-note">
+              Starred services were evaluated in both normal and private modes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Privacy Policy ──────────────────────────────────────── -->
+      <section id="privacy-policy">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Transparency</div>
+            <h2 class="section-title">Privacy Policy Analysis</h2>
+            <p class="section-desc">
+              All 20 privacy policies acknowledge general data practices, but
+              most stop there. Only 8 name specific third-party recipients - and
+              three services have a critical gap.
+            </p>
+          </div>
+
+          <div class="callout good">
+            <span class="callout-icon">✓</span>
+            <div>
+              <strong>Duck.ai stands out:</strong> the only service studied with
+              zero third-party data sharing. It actively strips user IP
+              addresses from requests. OpenRouter and Claude provide the most
+              comprehensive third-party disclosure among the services examined.
+            </div>
+          </div>
+
+          <div class="callout bad">
+            <span class="callout-icon">!</span>
+            <div>
+              <strong>Critical policy gap - Genspark, SeaArt, ChatOn:</strong>
+              these three services transmit plaintext conversation text to
+              Microsoft Clarity (session replay), yet none of their privacy
+              policies disclose Microsoft or Clarity as a data recipient.
+            </div>
+          </div>
+
+          <div class="policy-table-wrap">
+            <table
+              id="policy-table"
+              aria-label="Privacy policy analysis by chatbot"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Chatbot</th>
+                  <th scope="col">Names Specific Recipients</th>
+                  <th scope="col">Notable Gap</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Methodology ─────────────────────────────────────────── -->
+      <section id="methodology">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Methods</div>
+            <h2 class="section-title">Study Methodology</h2>
+            <p class="section-desc">
+              A controlled measurement study using fresh test accounts, a single
+              sensitive prompt, and comprehensive traffic analysis with 12+
+              encoding variants to catch hashed identifiers.
+            </p>
+          </div>
+
+          <div class="pipeline">
+            <div class="pipeline-step">
+              <div class="pipeline-num">01</div>
+              <div class="pipeline-title">Fresh Accounts</div>
+              <div class="pipeline-desc">
+                New account per service, controlled test identity - known email,
+                name, credentials
+              </div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">02</div>
+              <div class="pipeline-title">Sensitive Prompt</div>
+              <div class="pipeline-desc">
+                "pregnancy test near me" - health topic with implicit location,
+                high privacy stakes
+              </div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">03</div>
+              <div class="pipeline-title">Traffic Capture</div>
+              <div class="pipeline-desc">
+                Full HTTP metadata, URLs, headers, request bodies, cookies via
+                Chrome DevTools
+              </div>
+            </div>
+            <div class="pipeline-step">
+              <div class="pipeline-num">04</div>
+              <div class="pipeline-title">Analysis Pipeline</div>
+              <div class="pipeline-desc">
+                Preprocess → search target definition → matching → party
+                attribution
+              </div>
+            </div>
+          </div>
+
+          <div class="method-grid">
+            <div class="method-card">
+              <h4>Chatbot Selection</h4>
+              <p>
+                20 popular AI chatbots spanning major US and international
+                providers - closed-weight (ChatGPT, Claude, Gemini) and
+                open-weight deployments (DeepSeek, Qwen), consumer and
+                developer-oriented.
+              </p>
+            </div>
+            <div class="method-card">
+              <h4>Prompt Design</h4>
+              <p>
+                "pregnancy test near me" was chosen for combining a sensitive
+                health topic with an implicit location - a high-stakes query
+                category where privacy exposure carries real-world consequences.
+              </p>
+            </div>
+            <div class="method-card">
+              <h4>Encoding &amp; Hash Coverage</h4>
+              <p>
+                Identity strings searched across 12+ encoding and hash variants:
+                base64, URL-encoding, hex, MD5, SHA-1/256/512, SHA3, RIPEMD-160,
+                CRC-32, Adler-32 - to catch hashed email identifiers.
+              </p>
+            </div>
+            <div class="method-card">
+              <h4>Party Attribution</h4>
+              <p>
+                eTLD+1 matching classifies domains. Platform parties (e.g.
+                Google for Gemini) are distinguished from independent third
+                parties. Categories: Advertising, Analytics, Other.
+              </p>
+            </div>
+            <div class="method-card">
+              <h4>Private Mode Evaluation</h4>
+              <p>
+                10 services support private or temporary chat. Each was
+                evaluated identically to normal sessions and results compared to
+                measure tracking reduction effectiveness.
+              </p>
+            </div>
+            <div class="method-card">
+              <h4>Scope &amp; Limitations</h4>
+              <p>
+                Web interfaces only - excludes mobile apps, extensions, and
+                embedded chatbot deployments. Single controlled prompt. Chrome
+                baseline without tracking protection. Measurement-only; does not
+                evaluate user consent flows.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Citation ────────────────────────────────────────────── -->
+      <section id="citation">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow">Citation</div>
+            <h2 class="section-title">Cite This Work</h2>
+          </div>
+
+          <button
+            class="bibtex-toggle"
+            id="bibtex-toggle"
+            aria-expanded="false"
+            aria-controls="bibtex-block"
+          >
+            { } &nbsp; Show BibTeX
+          </button>
+
+          <div class="bibtex-block" id="bibtex-block" style="display: none">
+            <pre class="bibtex-code">
+@article{jazlan2026tracking,
   title   = {Tracking Conversations: Measuring Content and Identity Exposure on AI Chatbots},
   author  = {Jazlan, Muhammad and Wang, Ethan and Vekaria, Yash and Shafiq, Zubair},
   journal = {arXiv preprint arXiv:2604.27438},
   year    = {2026}
-}</pre>
-    </div>
+}</pre
+            >
+          </div>
 
-    <p class="arxiv-link">
-      Available on arXiv: <a href="https://arxiv.org/abs/2604.27438" target="_blank" rel="noopener">arXiv:2604.27438 [cs.CR]</a>
-    </p>
-  </div>
-</section>
+          <p class="arxiv-link">
+            Available on arXiv:
+            <a
+              href="https://arxiv.org/abs/2604.27438"
+              target="_blank"
+              rel="noopener"
+              >arXiv:2604.27438 [cs.CR]</a
+            >
+          </p>
+        </div>
+      </section>
 
-<!-- ── Authors ─────────────────────────────────────────────── -->
-<section id="authors">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow" style="color:var(--accent);">Research Team</div>
-      <h2 class="section-title">Authors</h2>
-    </div>
+      <!-- ── Authors ─────────────────────────────────────────────── -->
+      <section id="authors">
+        <div class="container">
+          <div class="section-header">
+            <div class="section-eyebrow" style="color: var(--accent)">
+              Research Team
+            </div>
+            <h2 class="section-title">Authors</h2>
+          </div>
 
-    <div class="author-grid">
-      <div class="author-card">
-        <div class="author-avatar">MJ</div>
-        <div class="author-name">Muhammad Jazlan</div>
-        <div class="author-affil">UC Davis</div>
-        <div class="author-email">mjazlan@ucdavis.edu</div>
-      </div>
-      <div class="author-card">
-        <div class="author-avatar">EW</div>
-        <div class="author-name">Ethan Wang</div>
-        <div class="author-affil">UC Davis</div>
-        <div class="author-email">ebwang@ucdavis.edu</div>
-      </div>
-      <div class="author-card">
-        <div class="author-avatar">YV</div>
-        <div class="author-name">Yash Vekaria</div>
-        <div class="author-affil">UC Davis</div>
-        <div class="author-email">yvekaria@ucdavis.edu</div>
-      </div>
-      <div class="author-card">
-        <div class="author-avatar">ZS</div>
-        <div class="author-name">Zubair Shafiq</div>
-        <div class="author-affil">UC Davis</div>
-        <div class="author-email">zubair@ucdavis.edu</div>
-      </div>
-    </div>
-  </div>
-</section>
+          <div class="author-grid">
+            <div class="author-card">
+              <div class="author-avatar">MJ</div>
+              <div class="author-name">Muhammad Jazlan</div>
+              <div class="author-affil">UC Davis</div>
+              <div class="author-email">mjazlan@ucdavis.edu</div>
+            </div>
+            <div class="author-card">
+              <div class="author-avatar">EW</div>
+              <div class="author-name">Ethan Wang</div>
+              <div class="author-affil">UC Davis</div>
+              <div class="author-email">ebwang@ucdavis.edu</div>
+            </div>
+            <div class="author-card">
+              <div class="author-avatar">YV</div>
+              <div class="author-name">Yash Vekaria</div>
+              <div class="author-affil">UC Davis</div>
+              <div class="author-email">yvekaria@ucdavis.edu</div>
+            </div>
+            <div class="author-card">
+              <div class="author-avatar">ZS</div>
+              <div class="author-name">Zubair Shafiq</div>
+              <div class="author-affil">UC Davis</div>
+              <div class="author-email">zubair@ucdavis.edu</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-<!-- ── Footer ──────────────────────────────────────────────── -->
-<footer>
-  <div class="container">
-    <span>© 2026 Jazlan, Wang, Vekaria &amp; Shafiq · University of California, Davis</span>
-    <nav aria-label="Footer navigation">
-      <a href="https://arxiv.org/abs/2604.27438" target="_blank" rel="noopener">Paper</a>
-      <a href="#matrix">Matrix</a>
-      <a href="#sankey">Data Flows</a>
-      <a href="#citation">Cite</a>
-      <a href="#authors">Contact</a>
-    </nav>
-  </div>
-</footer>
+      <!-- ── Footer ──────────────────────────────────────────────── -->
+      <footer>
+        <div class="container">
+          <span
+            >© 2026 Jazlan, Wang, Vekaria &amp; Shafiq · University of
+            California, Davis</span
+          >
+          <nav aria-label="Footer navigation">
+            <a
+              href="https://arxiv.org/abs/2604.27438"
+              target="_blank"
+              rel="noopener"
+              >Paper</a
+            >
+            <a href="#matrix">Matrix</a>
+            <a href="#sankey">Data Flows</a>
+            <a href="#citation">Cite</a>
+            <a href="#authors">Contact</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
 
-</main>
-
-<script src="js/data.js"></script>
-<script src="js/script.js"></script>
-</body>
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+  </body>
 </html>
